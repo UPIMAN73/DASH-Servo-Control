@@ -1,4 +1,5 @@
 # Deploy-able Articulating Solar Hunter
+## Property of Florida Institute of Technology (FIT)
 
 You can use the [editor on GitHub](https://github.com/UPIMAN73/DASH-Servo-Control/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
