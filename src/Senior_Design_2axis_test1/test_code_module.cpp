@@ -7,16 +7,7 @@
 
 
 // Libraries
-#include <iostream>
-#include <stdio.h>
-#include <cmath>
-
-
-// This part is the function precalls
-double valueScore(double t);
-
-// binary search like function
-double val1;
+#include <string>
 
 
 // global variables
@@ -30,15 +21,18 @@ double tollerance = 5.0; // tollerance value
 int threshold = 550;     // threshold for the position of the solar array
 
 // servo motor control variables
-const double maxSpeed = 600.0d;
-double acceleration = 300.0d;
+const double maxSpeed = 600.0;
+double acceleration = 300.0;
 int movePos = 240;
 
-int avt = (lt + rt) / 2; // average value top
-int avd = (ld + rd) / 2; // average value down
-int avl = (lt + ld) / 2; // average value left
-int avr = (rt + rd) / 2; // average value right
 
+// TODO Make a function that consissts of these values
+int avt = (getTopLeft() + getTopRight()) / 2; // average value top
+int avd = (getBottomLeft() + getBottomRight()) / 2; // average value down
+int avl = (getTopLeft() + getBottomLeft()) / 2; // average value left
+int avr = (getTopRight() + getBottomRight()) / 2; // average value right
+
+// differences in positions
 int dvert = avt - avd; // check the diffirence of up and down
 int dhoriz = avl - avr;// check the diffirence og left and rigt
 
@@ -144,7 +138,146 @@ int getBottomRight()
 }
 
 
+
 /*
  * The Test Environment will be setup with a console input
- * 
+ * Obtain information from the arduino to then save it to a 
+ * Redirect this info to a computer to then a savefile
  */
+
+#define trials_length 1000                  // this is used for testing setup for array obtaining information.
+#define MAX_LONG 4294967295L                // Maximum Long Number
+#define MAX_DOUBLE 1.7976931348623158e+308  // Maximum double number
+
+
+int n = 0;                            // maximum threshold value
+double tv1;                           // threshold value 1
+double tv2;                           // threshold value 2
+double maxSolarValue = 0.0;           // maximum solar panel value
+double avgSolarValue = 0.0;           // Average solar panel value
+double minSolarValue = 1.79769e+308;  // minimum solar panel value
+unsigned long motorValue = 0L;        // current motor value
+int mindex = 0;                       // position of the motor index
+
+unsigned long* motorValues = new unsigned long[trials_length];
+
+
+// this counts the maximum amount of times the maximum possible number of a long can be called
+int getMultiplesMotor(unsigned long *sv)
+{
+    int res = -1;
+
+    for (int i = 0; i < sizeof(sv); i++)
+    {
+        if (sv[i] == 0)
+            break;
+
+        else
+        {
+            res++;
+        }
+    }
+    
+    return res;
+}
+
+// get minimum motor value index.
+int getMinMotorValue(unsigned long* mv)
+{
+    unsigned long mnmv = MAX_LONG;
+    int index = -1;
+
+    for (int i = 0; i < sizeof(mv); i++)
+    {
+        // break if at end of trailing data
+        if (mv[i] == 0)
+            break;
+        
+        // check to see what the index is
+        if (mv[i] < mnmv)
+            index = i;
+        
+        // set the max value to the highest solar value
+        mnmv = (mv[i] < mnmv) ? mv[i] : mnmv;
+    }
+
+    return index;
+}
+
+// check to see if motor value has reached maximum potential
+void motorCheck()
+{
+    if (motorValue >= MAX_LONG-1)
+    {
+        motorValues[mindex] = motorValue;
+        mindex++;
+        motorValue = motorValue % MAX_LONG-1;
+    }
+}
+
+// print out the Motor Value from the Trials
+void printMotorValue()
+{
+    Serial.print("Motor Value: ");
+    Serial.print(motorValue);
+    Serial.println("");
+}
+
+
+// TODO Control Loop for this project
+
+/*
+ * Arduino Main Loop Functions
+ */
+
+void loop()
+{
+    // average position based calculations
+    avt = (getTopLeft() + getTopRight()) / 2;
+    avd = (getBottomLeft() + getBottomRight()) / 2;
+    avl = (getTopLeft() + getBottomLeft()) / 2;
+    avr = (getTopRight() + getBottomRight()) / 2;
+
+    //Stop Movement when no  light detecetd
+    if((avt < threshold) && (avd < threshold) && (avl < threshold) && (avr < threshold)) 
+    {
+        // Do Nothing
+    }
+
+    //Horizontal Movement
+    if(avr > avl + tollerance)
+    {
+        motorValue++;
+        moveRight();
+    }
+    else if(avl > avr + tollerance)
+    {
+        motorValue++;
+        moveLeft();
+    }
+    else {} // Do Nothing
+
+    //Vertical Movement
+    if(avt > avd + tollerance)  
+    {
+        motorValue++;
+        moveUp();
+    }
+
+    else if(avd > avt + tollerance)  
+    {
+        motorValue++;
+        moveDown();
+    }
+    else{}  // do nothing
+
+    motorCheck();
+    printVoltage();
+    printMotorValue();
+
+    // voltage stuff
+    double curVoltage = (double) getVoltage();
+    maxSolarValue = (curVoltage > maxSolarValue) ? curVoltage : maxSolarValue;
+    minSolarValue = (curVoltage < minSolarValue) ? curVoltage : minSolarValue;
+    avgSolarValue += curVoltage;
+}
