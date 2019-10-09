@@ -6,14 +6,65 @@
  */
 
 
-// Libraries
-#include <string>
+/*
+ * Libraries
+ */
+
+// C Libraries
+#include <time.h>
+
+// Arduino Libraries
+#include <Servo.h> // include Servo library 
+#include <CustomStepper.h>
+#include <AccelStepper.h>
+#include <AFMotor.h>
+
+/*
+ * Global Variables
+ */
+
+// Motor Declatarions
+AF_Stepper motor1(4075.7728395, 1);
+AF_Stepper motor2(4075.7728395, 2);
+
+void forwardstep1() {  
+  motor1.onestep(FORWARD, SINGLE);
+}
+void backwardstep1() {  
+  motor1.onestep(BACKWARD, SINGLE);
+}
+// wrappers for the second motor!
+void forwardstep2() {  
+  motor2.onestep(FORWARD, SINGLE);
+}
+void backwardstep2() {  
+  motor2.onestep(BACKWARD, SINGLE);
+}
+
+// Stepper motor declarations
+AccelStepper stepperv1(forwardstep1,backwardstep1);
+AccelStepper stepperh1(forwardstep2,backwardstep2);
 
 
-// global variables
+// Limits for potentiometers on steppers
+int stepperhLimitHigh = 2037.88641975;
+int stepperhLimitLow = -2037.88641975;
+
+int steppervLimitHigh = 2037.88641975;
+int steppervLimitLow = -2037.88641975;
+
+
+// PINS for Arduino
+int ldrlt = 2; //LDR top left - BOTTOM LEFT    <--- BDG
+int ldrrt = 3; //LDR top rigt - BOTTOM RIGHT 
+int ldrld = 0; //LDR down left - TOP LEFT
+int ldrrd = 1; //ldr down rigt - TOP RIGHT
+int solar = 5; // solar panel pin number
 
 // int dtime = analogRead(4)/20; // read potentiometers  
 // int tol = analogRead(5)/4;
+
+const float referenceVolts = 5.0; // reference voltage
 
 // setting variables that can be changed through the arduino console
 int dtime = 10;          // difference in time
@@ -145,14 +196,16 @@ int getBottomRight()
  * Redirect this info to a computer to then a savefile
  */
 
-#define trials_length 1000                  // this is used for testing setup for array obtaining information.
+#define MAX_T    10                         // Maximum threshold value
 #define MAX_LONG 4294967295L                // Maximum Long Number
 #define MAX_DOUBLE 1.7976931348623158e+308  // Maximum double number
+#define ITERSTEP 0.5                        // Iteration step size
+#define trials_length  (MAX_T / ITERSTEP)   // this is used for testing setup for array obtaining information.
 
 
-int n = 0;                            // maximum threshold value
+
+int n = MAX_T;                        // maximum threshold value
 double tv1;                           // threshold value 1
-double tv2;                           // threshold value 2
 double maxSolarValue = 0.0;           // maximum solar panel value
 double avgSolarValue = 0.0;           // Average solar panel value
 double minSolarValue = 1.79769e+308;  // minimum solar panel value
@@ -223,61 +276,88 @@ void printMotorValue()
     Serial.println("");
 }
 
+//  print out a line to the serial console
+void printLine(string s)
+{
+    Serial.pritnln(s);
+}
+
 
 // TODO Control Loop for this project
+
+/*
+ * Time Based setup
+ */
+
+#define TIME_DELTA 30 // the number of seconds used to run each trial
+time_t i; // Initial Time
+time_t f; // Final Time
+
 
 /*
  * Arduino Main Loop Functions
  */
 
+int iter = 0;
 void loop()
 {
-    // average position based calculations
-    avt = (getTopLeft() + getTopRight()) / 2;
-    avd = (getBottomLeft() + getBottomRight()) / 2;
-    avl = (getTopLeft() + getBottomLeft()) / 2;
-    avr = (getTopRight() + getBottomRight()) / 2;
-
-    //Stop Movement when no  light detecetd
-    if((avt < threshold) && (avd < threshold) && (avl < threshold) && (avr < threshold)) 
+    int* cur_thresh = n;
+    double curVoltage = 0.0d;
+    time(&i);
+    iter = 0;
+    while ((f - i) < TIME_DELTA && cur_thresh > 0.0)
     {
-        // Do Nothing
-    }
+        time(&f);
+        // average position based calculations
+        avt = (getTopLeft() + getTopRight()) / 2;
+        avd = (getBottomLeft() + getBottomRight()) / 2;
+        avl = (getTopLeft() + getBottomLeft()) / 2;
+        avr = (getTopRight() + getBottomRight()) / 2;
 
-    //Horizontal Movement
-    if(avr > avl + tollerance)
-    {
-        motorValue++;
-        moveRight();
-    }
-    else if(avl > avr + tollerance)
-    {
-        motorValue++;
-        moveLeft();
-    }
-    else {} // Do Nothing
+        //Stop Movement when no  light detecetd
+        if((avt < threshold) && (avd < threshold) && (avl < threshold) && (avr < threshold)) 
+        {
+            // Do Nothing
+        }
 
-    //Vertical Movement
-    if(avt > avd + tollerance)  
-    {
-        motorValue++;
-        moveUp();
+        //Horizontal Movement
+        if(avr > avl + tollerance)
+        {
+            motorValue++;
+            moveRight();
+        }
+        else if(avl > avr + tollerance)
+        {
+            motorValue++;
+            moveLeft();
+        }
+        else {} // Do Nothing
+
+        //Vertical Movement
+        if(avt > avd + tollerance)  
+        {
+            motorValue++;
+            moveUp();
+        }
+
+        else if(avd > avt + tollerance)  
+        {
+            motorValue++;
+            moveDown();
+        }
+        else{}  // do nothing
+
+        motorCheck();
+        printVoltage();
+        printMotorValue();
+
+        // voltage stuff
+        curVoltage = (double) getVoltage();
+        maxSolarValue = (curVoltage > maxSolarValue) ? curVoltage : maxSolarValue;
+        minSolarValue = (curVoltage < minSolarValue) ? curVoltage : minSolarValue;
+        avgSolarValue += curVoltage;
+        iter++;
     }
-
-    else if(avd > avt + tollerance)  
-    {
-        motorValue++;
-        moveDown();
-    }
-    else{}  // do nothing
-
-    motorCheck();
-    printVoltage();
-    printMotorValue();
-
-    // voltage stuff
-    double curVoltage = (double) getVoltage();
-    maxSolarValue = (curVoltage > maxSolarValue) ? curVoltage : maxSolarValue;
-    minSolarValue = (curVoltage < minSolarValue) ? curVoltage : minSolarValue;
-    avgSolarValue += curVoltage;
+    string solarValues = concat(concat(concat("Solar Value (Max): ", maxSolarValue), concat("   Solar Value (Min): ", minSolarValue)), "   Solar Value (Avg): ", (avgSolarValue/iter));
+    printLine(solarValues);
 }
