@@ -299,12 +299,15 @@ time_t f; // Final Time
  */
 
 int iter = 0;
+double curVoltage;
+double* cur_thresh = &n;
 void loop()
 {
-    int* cur_thresh = n;
-    double curVoltage = 0.0d;
+    curVoltage = 0.0d;
     time(&i);
     iter = 0;
+
+    // threshold loop
     while ((f - i) < TIME_DELTA && cur_thresh > 0.0)
     {
         time(&f);
@@ -358,6 +361,9 @@ void loop()
         avgSolarValue += curVoltage;
         iter++;
     }
+
+    // solar values and decrementing a step of the threshold
     string solarValues = concat(concat(concat("Solar Value (Max): ", maxSolarValue), concat("   Solar Value (Min): ", minSolarValue)), "   Solar Value (Avg): ", (avgSolarValue/iter));
     printLine(solarValues);
+    *cur_thresh -= ITERSTEP;
 }
