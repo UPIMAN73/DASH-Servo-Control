@@ -84,9 +84,9 @@ void moveUp();
 void moveDown();
 
 // print Function
+void printLine(String s);
 void printAverageMsg();
 void printVoltage();
-void printLine();
 
 // Get LDR Values
 int getBottomLeft();
@@ -150,9 +150,9 @@ void moveDown()
 
 
 //  print out a line to the serial console
-void printLine(string s)
+void printLine(String s)
 {
-    Serial.pritnln(s);
+    Serial.println(s);
 }
 
 // print out the averages of the 
@@ -217,6 +217,12 @@ int getBottomRight()
 // Main Code
 double curVoltage;
 int iter;
+
+
+float tv1;                           // threshold value 1
+float maxSolarValue = 0.0;           // maximum solar panel value
+float avgSolarValue = 0.0;           // Average solar panel value
+float minSolarValue = 1.175493e38;  // minimum solar panel value
 
 void loop()
 {

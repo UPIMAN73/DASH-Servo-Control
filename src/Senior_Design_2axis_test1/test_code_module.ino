@@ -68,12 +68,12 @@ const float referenceVolts = 5.0; // reference voltage
 
 // setting variables that can be changed through the arduino console
 int dtime = 10;          // difference in time
-double tollerance = 5.0; // tollerance value
+float tollerance = 5.0; // tollerance value
 int threshold = 550;     // threshold for the position of the solar array
 
 // servo motor control variables
-const double maxSpeed = 600.0;
-double acceleration = 300.0;
+const float maxSpeed = 600.0;
+float acceleration = 300.0;
 int movePos = 240;
 
 
@@ -130,6 +130,12 @@ void moveDown()
     stepperv1.run();
 }
 
+
+void printLn(String s) 
+{
+    Serial.println(s);#include <String.h>
+
+}
 
 // print out the averages of the 
 void printAverageMsg()
@@ -198,17 +204,17 @@ int getBottomRight()
 
 #define MAX_T    10                         // Maximum threshold value
 #define MAX_LONG 4294967295L                // Maximum Long Number
-#define MAX_DOUBLE 1.7976931348623158e+308  // Maximum double number
+#define MAX_float 1.1754942107  // Maximum float number
 #define ITERSTEP 0.5                        // Iteration step size
 #define trials_length  (MAX_T / ITERSTEP)   // this is used for testing setup for array obtaining information.
 
 
 
 int n = MAX_T;                        // maximum threshold value
-double tv1;                           // threshold value 1
-double maxSolarValue = 0.0;           // maximum solar panel value
-double avgSolarValue = 0.0;           // Average solar panel value
-double minSolarValue = 1.79769e+308;  // minimum solar panel value
+float tv1;                           // threshold value 1
+float maxSolarValue = 0.0;           // maximum solar panel value
+float avgSolarValue = 0.0;           // Average solar panel value
+float minSolarValue = 1.79769e+308;  // minimum solar panel value
 unsigned long motorValue = 0L;        // current motor value
 int mindex = 0;                       // position of the motor index
 
@@ -277,7 +283,7 @@ void printMotorValue()
 }
 
 //  print out a line to the serial console
-void printLine(string s)
+void printLn(String s)
 {
     Serial.pritnln(s);
 }
@@ -299,8 +305,8 @@ time_t f; // Final Time
  */
 
 int iter = 0;
-double curVoltage;
-double* cur_thresh = &n;
+float curVoltage;
+float* cur_thresh = &n;
 void loop()
 {
     curVoltage = 0.0d;
@@ -355,7 +361,7 @@ void loop()
         printMotorValue();
 
         // voltage stuff
-        curVoltage = (double) getVoltage();
+        curVoltage = (float) getVoltage();
         maxSolarValue = (curVoltage > maxSolarValue) ? curVoltage : maxSolarValue;
         minSolarValue = (curVoltage < minSolarValue) ? curVoltage : minSolarValue;
         avgSolarValue += curVoltage;
@@ -363,7 +369,12 @@ void loop()
     }
 
     // solar values and decrementing a step of the threshold
-    string solarValues = concat(concat(concat("Solar Value (Max): ", maxSolarValue), concat("   Solar Value (Min): ", minSolarValue)), "   Solar Value (Avg): ", (avgSolarValue/iter));
-    printLine(solarValues);
+    String solarValues = "Solar Value (Max): ";
+    solarValues.concat(maxSolarValue);
+    solarValues.concat("   Solar Value (Min): ");
+    solarValues.concat(minSolarValue);
+    solarValues.concat("   Solar Value (Avg): ");
+    solarValues.concat(avgSolarValue/iter);
+    printLn(solarValues);
     *cur_thresh -= ITERSTEP;
 }
