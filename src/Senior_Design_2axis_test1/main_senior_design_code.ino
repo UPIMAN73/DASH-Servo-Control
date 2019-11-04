@@ -10,7 +10,7 @@
  * Libraries
  */
 
-// C Libraries
+// C Librarieswire
 #include <time.h>
 
 // Arduino Libraries
@@ -77,6 +77,26 @@ double acceleration = 300.0;
 int movePos = 240;
 
 
+// function calls 
+void moveLeft();
+void moveRight();
+void moveUp();
+void moveDown();
+
+// print Function
+void printAverageMsg();
+void printVoltage();
+void printLine();
+
+// Get LDR Values
+int getBottomLeft();
+int getBottomRight();
+int getTopLeft();
+int getTopRight();
+float getVoltage();
+
+
+
 // TODO Make a function that consissts of these values
 int avt = (getTopLeft() + getTopRight()) / 2; // average value top
 int avd = (getBottomLeft() + getBottomRight()) / 2; // average value down
@@ -86,8 +106,6 @@ int avr = (getTopRight() + getBottomRight()) / 2; // average value right
 // differences in positions
 int dvert = avt - avd; // check the diffirence of up and down
 int dhoriz = avl - avr;// check the diffirence og left and rigt
-
-
 
 
 /*
@@ -130,6 +148,12 @@ void moveDown()
     stepperv1.run();
 }
 
+
+//  print out a line to the serial console
+void printLine(string s)
+{
+    Serial.pritnln(s);
+}
 
 // print out the averages of the 
 void printAverageMsg()
@@ -190,127 +214,18 @@ int getBottomRight()
 
 
 
-/*
- * The Test Environment will be setup with a console input
- * Obtain information from the arduino to then save it to a 
- * Redirect this info to a computer to then a savefile
- */
-
-#define MAX_T    10                         // Maximum threshold value
-#define MAX_LONG 4294967295L                // Maximum Long Number
-#define MAX_DOUBLE 1.7976931348623158e+308  // Maximum double number
-#define ITERSTEP 0.5                        // Iteration step size
-#define trials_length  (MAX_T / ITERSTEP)   // this is used for testing setup for array obtaining information.
-
-
-
-int n = MAX_T;                        // maximum threshold value
-double tv1;                           // threshold value 1
-double maxSolarValue = 0.0;           // maximum solar panel value
-double avgSolarValue = 0.0;           // Average solar panel value
-double minSolarValue = 1.79769e+308;  // minimum solar panel value
-unsigned long motorValue = 0L;        // current motor value
-int mindex = 0;                       // position of the motor index
-
-unsigned long* motorValues = new unsigned long[trials_length];
-
-
-// this counts the maximum amount of times the maximum possible number of a long can be called
-int getMultiplesMotor(unsigned long *sv)
-{
-    int res = -1;
-
-    for (int i = 0; i < sizeof(sv); i++)
-    {
-        if (sv[i] == 0)
-            break;
-
-        else
-        {
-            res++;
-        }
-    }
-    
-    return res;
-}
-
-// get minimum motor value index.
-int getMinMotorValue(unsigned long* mv)
-{
-    unsigned long mnmv = MAX_LONG;
-    int index = -1;
-
-    for (int i = 0; i < sizeof(mv); i++)
-    {
-        // break if at end of trailing data
-        if (mv[i] == 0)
-            break;
-        
-        // check to see what the index is
-        if (mv[i] < mnmv)
-            index = i;
-        
-        // set the max value to the highest solar value
-        mnmv = (mv[i] < mnmv) ? mv[i] : mnmv;
-    }
-
-    return index;
-}
-
-// check to see if motor value has reached maximum potential
-void motorCheck()
-{
-    if (motorValue >= MAX_LONG - 1)
-    {
-        motorValues[mindex] = motorValue;
-        mindex++;
-        motorValue = motorValue % MAX_LONG-1;
-    }
-}
-
-// print out the Motor Value from the Trials
-void printMotorValue()
-{
-    Serial.print("Motor Value: ");
-    Serial.print(motorValue);
-    Serial.println("");
-}
-
-//  print out a line to the serial console
-void printLine(string s)
-{
-    Serial.pritnln(s);
-}
-
-
-// TODO Control Loop for this project
-
-/*
- * Time Based setup
- */
-
-#define TIME_DELTA 30 // the number of seconds used to run each trial
-time_t i; // Initial Time
-time_t f; // Final Time
-
-
-/*
- * Arduino Main Loop Functions
- */
-
-int iter = 0;
+// Main Code
 double curVoltage;
-double* cur_thresh = &n;
+int iter;
+
 void loop()
 {
     curVoltage = 0.0d;
-    time(&i);
     iter = 0;
 
     // threshold loop
-    while ((f - i) < TIME_DELTA && cur_thresh > 0.0)
+    while (true)
     {
-        time(&f);
         // average position based calculations
         avt = (getTopLeft() + getTopRight()) / 2;
         avd = (getBottomLeft() + getBottomRight()) / 2;
@@ -326,12 +241,10 @@ void loop()
         //Horizontal Movement
         if(avr > avl + tollerance)
         {
-            motorValue++;
             moveRight();
         }
         else if(avl > avr + tollerance)
         {
-            motorValue++;
             moveLeft();
         }
         else {} // Do Nothing
@@ -339,31 +252,21 @@ void loop()
         //Vertical Movement
         if(avt > avd + tollerance)  
         {
-            motorValue++;
             moveUp();
         }
 
         else if(avd > avt + tollerance)  
         {
-            motorValue++;
             moveDown();
         }
         else{}  // do nothing
 
-        motorCheck();
         printVoltage();
-        printMotorValue();
 
         // voltage stuff
         curVoltage = (double) getVoltage();
         maxSolarValue = (curVoltage > maxSolarValue) ? curVoltage : maxSolarValue;
         minSolarValue = (curVoltage < minSolarValue) ? curVoltage : minSolarValue;
         avgSolarValue += curVoltage;
-        iter++;
     }
-
-    // solar values and decrementing a step of the threshold
-    string solarValues = concat(concat(concat("Solar Value (Max): ", maxSolarValue), concat("   Solar Value (Min): ", minSolarValue)), "   Solar Value (Avg): ", (avgSolarValue/iter));
-    printLine(solarValues);
-    *cur_thresh -= ITERSTEP;
 }
