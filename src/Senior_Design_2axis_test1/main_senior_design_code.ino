@@ -15,7 +15,6 @@
 
 // Arduino Libraries
 #include <Servo.h> // include Servo library 
-#include <CustomStepper.h>
 #include <AccelStepper.h>
 #include <AFMotor.h>
 
@@ -84,7 +83,7 @@ void moveUp();
 void moveDown();
 
 // print Function
-void printLine(String s);
+void printLn(String s);
 void printAverageMsg();
 void printVoltage();
 
@@ -150,7 +149,7 @@ void moveDown()
 
 
 //  print out a line to the serial console
-void printLine(String s)
+void printLn(String s)
 {
     Serial.println(s);
 }
@@ -224,6 +223,11 @@ float maxSolarValue = 0.0;           // maximum solar panel value
 float avgSolarValue = 0.0;           // Average solar panel value
 float minSolarValue = 1.175493e38;  // minimum solar panel value
 
+void setup()
+{
+  Serial.begin(9600);
+}
+
 void loop()
 {
     curVoltage = 0.0d;
@@ -237,6 +241,12 @@ void loop()
         avd = (getBottomLeft() + getBottomRight()) / 2;
         avl = (getTopLeft() + getBottomLeft()) / 2;
         avr = (getTopRight() + getBottomRight()) / 2;
+
+        printLn("Top Left: ".concat(getTopLeft()));
+        printLn("Top Right: ".concat(getTopRight()));
+        printLn("Bottom Left: ".concat(getBottomLeft()));
+        printLn("Bottom Right: ".concat(getBottomRight()));
+        
 
         //Stop Movement when no  light detecetd
         if((avt < threshold) && (avd < threshold) && (avl < threshold) && (avr < threshold)) 
