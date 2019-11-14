@@ -25,7 +25,6 @@ class TestMode
             m_name = name;
             m_it = initial_threshold;
             m_ft = final_threshold;
-            m_startT = ATime().currentTime();
             m_duration = duration;
         }
 
@@ -35,12 +34,30 @@ class TestMode
             Serial.println("Needs to be inherited in order to have it operate correctly.");
         } // Write your own run function
 
+
+        String getName()
+        {
+          return m_name;
+        }
+
+        double getInitialValue()
+        {
+          return m_it;
+        }
+
+        double getFinalValue()
+        {
+          return m_ft;
+        }
+
+        long getDuration()
+        {
+          return m_duration;
+        }
     
     protected:
         String m_name;
         double m_it;
         double m_ft;
-        long m_startT;
-        long m_endT;
         long m_duration;
 };

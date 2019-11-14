@@ -1,5 +1,7 @@
 #include "testmode.h"
-#include "motor.h"
+#include "analogdevice.h"
+
+#define MAX_LEN 500
 
 /*
  * @author Joshua Calzadillas
@@ -13,20 +15,55 @@
 class MotorTest : public TestMode {
     public:
         // Add motors into the class
-        MotorTest(Motor motor1, Motor motor2, String name, double id, double fd, long duration) : TestMode(name, id, fd, duration)
+        MotorTest(double step, String name, double id, double fd, long duration) : TestMode(name, id, fd, duration)
         {
-          m1 = motor1;
-          m2 = motor2;
+            m_step = step;
+            m_trials = (int) ((fd - id) / step);
         }
 
-        // TODO
-        void run()
+        void setup()
         {
             Serial.println("Motor Test Mode");
-            //TODO
+            Serial.print("Running ");
+            Serial.print(m_trials);
+            Serial.println(" Trials");
+
+            Serial.println("Setting up the data input array");
+            delay(25);
+            long darray[MAX_LEN];
+            for (int i = 0; i < MAX_LEN; i++)
+            {
+                darray[i] = 0L;
+            }
+            Serial.println("Setup complete...");
+            delay(500);
+
+
         }
-    
+
+
+        long getTrialData()
+        {
+          return trial_data;
+        }
+
+        int getTrials()
+        {
+          return m_trials;
+        }
+
+        double getSteps()
+        {
+          return m_step;
+        }
+
+        void setDataValue(long num)
+        {
+          trial_data = num;
+        }
+       
     private:
-        Motor m1 = Motor(-1, "");
-        Motor m2 = Motor(-1, "");
+        double m_step;
+        long trial_data;
+        int m_trials;
 };

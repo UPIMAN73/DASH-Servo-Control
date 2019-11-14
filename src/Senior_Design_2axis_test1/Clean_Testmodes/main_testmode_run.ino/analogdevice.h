@@ -43,4 +43,4 @@ class AnalogDevice
     private:
         String m_name;
         int m_pin;
-}
+};
