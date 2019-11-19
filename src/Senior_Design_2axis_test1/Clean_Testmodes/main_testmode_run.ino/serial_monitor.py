@@ -2,7 +2,7 @@ import serial
 from datetime import datetime
 
 # device name and rate
-dev_name = ""
+dev_name = "/dev/ttyACM0"
 rate = 9600
 
 # serial declaration to interfce with teh device
@@ -14,18 +14,26 @@ data = ""
 
 
 try:
-    s.open()
+    if s.isOpen():
+        print("Device is already opened...\n%s" % (dev_name))
+    else:
+        s.open()
 
     print("Reading in Serial Input on device %s" % (dev_name))
-    while (s.is_open()):
-        data = s.readline()
+    while (s.isOpen()):
+        data = s.readline().decode()
         serial_input.append(data)
         print(data)
 
+except KeyboardInterrupt:
+    print("Pressed CTL+C")
 
 finally:
     # close the serial port
-    s.close()
+    if (s.isOpen()):
+        print("Device is still in use somewhere else...")
+    else:
+        s.close()
 
 
 f = None
@@ -35,7 +43,7 @@ try:
     f = open(str(datetime.now()), "w")
     
     for i in serial_input:
-        f.write(str(f) + "\n")
+        f.write(str(i) + "\n")
 
 finally:
     f.close()
