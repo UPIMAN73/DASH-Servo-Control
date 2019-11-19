@@ -176,6 +176,11 @@ void printVoltage()
     Serial.println("");
 }
 
+void printLDR()
+{
+    //
+}
+
 
 /*
  * Getters and Print Functions

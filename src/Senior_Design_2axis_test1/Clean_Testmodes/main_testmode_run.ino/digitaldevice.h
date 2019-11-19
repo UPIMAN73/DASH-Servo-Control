@@ -8,10 +8,10 @@
  */ 
 
 
-class AnalogDevice
+class DigitalDevice
 {
     public:
-        AnalogDevice(String name, int pin, bool outmode)
+        DigitalDevice(String name, int pin, bool outmode)
         {
             m_pin = pin;
             m_name = name;
@@ -73,4 +73,4 @@ class AnalogDevice
         String m_name;
         int m_pin;
         bool m_mode;
-}
+};

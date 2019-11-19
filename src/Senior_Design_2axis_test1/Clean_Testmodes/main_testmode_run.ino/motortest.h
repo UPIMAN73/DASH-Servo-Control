@@ -30,17 +30,19 @@ class MotorTest : public TestMode {
 
             Serial.println("Setting up the data input array");
             delay(25);
-            long darray[MAX_LEN];
+            
+            // setting up data_array
             for (int i = 0; i < MAX_LEN; i++)
             {
                 darray[i] = 0L;
             }
+
+
             Serial.println("Setup complete...");
             delay(500);
 
 
         }
-
 
         long getTrialData()
         {
@@ -61,9 +63,26 @@ class MotorTest : public TestMode {
         {
           trial_data = num;
         }
+
+        void addData()
+        {
+          if ((position) < MAX_LEN)
+          {
+            darray[position] = trial_data;
+            position += 1;
+          }
+
+          else
+          {
+            Serial.println("Error Enumerating the position");
+          }
+          
+        }
        
     private:
         double m_step;
         long trial_data;
         int m_trials;
+        long darray[MAX_LEN];
+        int position = 0;
 };

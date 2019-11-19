@@ -47,6 +47,9 @@ void run()
   long initialTime = ATime().currentTime();
   long finalTime = 0L; 
 
+  Serial.println("\n\n");
+  Serial.println("DAQ Values:");
+
   // Iteration aspect
   for (double i = mt.getInitialValue(); i < mt.getFinalValue(); i += mt.getSteps())
   {
@@ -76,6 +79,7 @@ void run()
       if((avt < threshold) && (avb < threshold) && (avl < threshold) && (avr < threshold)) 
       {
         // Do Nothing
+        //Serial.println(ATime().deltaTime(initialTime, finalTime));
       }
 
       //Horizontal Movement
@@ -117,7 +121,15 @@ void run()
       }
       else{}  // do nothing
     }
+
+    // print out the value to make it accessable to the user
+    Serial.print(i);
+    Serial.print("   ");
     Serial.println(motorValue);
+
+    // Adding motor value to a stored array so that it is possible to see it
+    mt.setDataValue(motorValue);
+    mt.addData();
   }
 }
 
