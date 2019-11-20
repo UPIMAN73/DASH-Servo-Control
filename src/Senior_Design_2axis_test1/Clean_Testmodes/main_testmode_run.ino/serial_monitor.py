@@ -2,7 +2,7 @@ import serial
 from datetime import datetime
 
 # device name and rate
-dev_name = "/dev/ttyACM0"
+dev_name = "/dev/ttyUSB1"
 rate = 9600
 
 # serial declaration to interfce with teh device

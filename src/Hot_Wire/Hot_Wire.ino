@@ -30,6 +30,7 @@ long finalTime = 0L;
 
 // loop code here for burn wire
 void loop() {
+  //Serial.println(analogRead(A0));
   finalTime = ATime().currentTime();
 
   // Auto Shutoff Functionality

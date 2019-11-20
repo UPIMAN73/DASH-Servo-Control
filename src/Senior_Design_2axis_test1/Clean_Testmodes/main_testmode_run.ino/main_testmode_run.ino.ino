@@ -123,13 +123,12 @@ void run()
     }
 
     // print out the value to make it accessable to the user
-    Serial.print(i);
-    Serial.print("   ");
-    Serial.println(motorValue);
+    Serial.print(motorValue);
+    Serial.print(", ");
 
     // Adding motor value to a stored array so that it is possible to see it
-    mt.setDataValue(motorValue);
-    mt.addData();
+    //mt.setDataValue(motorValue);
+    //mt.addData();
   }
 }
 
