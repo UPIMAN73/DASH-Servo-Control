@@ -1,0 +1,4 @@
+Arduino Class notes
+
+Don't make functional classes or control classes
+Make classes that store values to the arduino.

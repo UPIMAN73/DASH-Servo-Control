@@ -32,8 +32,8 @@ class Motor
         //  clean all of the values of the stored class
         virtual void clean()
         {
-          m_name = NULL;
-          m_pin = NULL;
+          m_name = "";
+          m_pin = 0;
         }
 
         // TODO 

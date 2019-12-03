@@ -3,8 +3,9 @@
 #include <AFMotor.h>
 
 // two stepper motors one on each port
-AF_Stepper motor1(4075.7728395, 1);
-AF_Stepper motor2(4075.7728395, 2);
+#define STEPS 200.00
+AF_Stepper motor1(STEPS, 1);
+AF_Stepper motor2(STEPS, 2);
 
 // you can change these to DOUBLE or INTERLEAVE or MICROSTEP!
 // wrappers for the first motor!
@@ -29,12 +30,12 @@ AccelStepper stepperh1(forwardstep2,backwardstep2);
 
 
 
-int stepperhLimitHigh = 2037.88641975;
-int stepperhLimitLow = -2037.88641975;
+double stepperhLimitHigh =  STEPS/2.0;
+double stepperhLimitLow =  -STEPS/2.0;
 
 
-int steppervLimitHigh = 2037.88641975;
-int steppervLimitLow = -2037.88641975;
+double steppervLimitHigh =  STEPS/2.0;
+double steppervLimitLow =  -STEPS/2.0;
 
 // LDR pin connections
 //  name  = analogpin;
