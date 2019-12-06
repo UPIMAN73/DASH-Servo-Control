@@ -2,8 +2,8 @@
 #include "time.h"
 
 // Relay define pins
-#define RELAY_1_PIN 7
-#define RELAY_2_PIN 6
+#define RELAY_1_PIN 52
+#define RELAY_2_PIN 53
 #define DURATION 3
 
 // Command string

@@ -98,58 +98,18 @@ void setup() {
   initialTime = ATime().currentTime();
 }
 
-/*
- * Vertical Motor Movement
- */
 
-void verticalForward()
-{
-  Serial.println("Moving VERTICAL motor backward");
-    smv->step(1, FORWARD, MOVEMENT_MODE);
-}
-
-void verticalBackward()
-{
-  Serial.println("Moving VERTICAL motor backward");
-    smv->step(1, BACKWARD, MOVEMENT_MODE);
-}
-
-/*
- * Horizontal Motor Movement
- */
-void horizontalForward()
-{
-    Serial.println("Moving horizontal motor forward");
-    smh->step(1, FORWARD, MOVEMENT_MODE);
-}
-
-void horizontalBackward()
-{
-  Serial.println("Moving horizontal motor backward");
-    smh->step(1, BACKWARD, MOVEMENT_MODE);
-}
-
-// This is the shut-off process of the entire board
-void shutOff()
-{
-    Serial.println("Initiating Auto-Shutoff");
-    r1.setValue(false);
-    r2.setValue(false);
-    // Make sure the step process if nullified
-    //smh->step(0, FORWARD, MOVEMENT_MODE);
-    //smv->step(0, FORWARD, MOVEMENT_MODE);
-    
-    // Release all of the motors
-    smh->release();
-    smv->release();
-    Serial.println("Auto-Shutoff Engaged");
-}
-
+void horizontalForward();
+void horizontalBackward();
+void verticalForward();
+void verticalBackward();
+void shutOff();
 
 void loop() 
 {
   // Auto Shutoff Functionality
-  if ((ATime().deltaTime(initialTime, finalTime) >= DURATION * 1000))
+  //if ((ATime().deltaTime(initialTime, finalTime) >= DURATION * 1000))
+  if (Serial.readString().equals("kill"))
   {
     Serial.println();
     Serial.print(DURATION);
@@ -184,26 +144,27 @@ void loop()
       //Horizontal Movement
       if(avr > avl + tol)
       {
+        Serial.println("Horizontal Forward");
         horizontalForward();
       }
 
-      else if(avl > avr + tol)
-      {
-        horizontalBackward();
-      }
-
-      else {} // Do Nothing
-
-      //Vertical Movement
-      if(avt > avb + tol)  
-      {
-        verticalForward(); 
-      }
-
-      else if(avb > avt + tol)  
-      {
-        verticalBackward();
-      }
+//      else if(avl > avr + tol)
+//      {
+//        horizontalBackward();
+//      }
+//
+//      else {} // Do Nothing
+//
+//      //Vertical Movement
+//      if(avt > avb + tol)  
+//      {
+//        verticalForward(); 
+//      }
+//
+//      else if(avb > avt + tol)  
+//      {
+//        verticalBackward();
+//      }
 
       else{}  // do nothing
   }
@@ -218,3 +179,50 @@ void loop()
     }
   }
  }
+
+/*
+ * Vertical Motor Movement
+ */
+
+void verticalForward()
+{
+    //Serial.println("Moving VERTICAL motor backward");
+    smv->step(100, FORWARD, MOVEMENT_MODE);
+}
+
+void verticalBackward()
+{
+    //Serial.println("Moving VERTICAL motor backward");
+    smv->step(100, BACKWARD, MOVEMENT_MODE);
+}
+
+/*
+ * Horizontal Motor Movement
+ */
+void horizontalForward()
+{
+    //Serial.println("Moving horizontal motor forward");
+    smh->step(100, FORWARD, MOVEMENT_MODE);
+}
+
+void horizontalBackward()
+{
+    //Serial.println("Moving horizontal motor backward");
+    smh->step(100, BACKWARD, MOVEMENT_MODE);
+}
+
+// This is the shut-off process of the entire board
+void shutOff()
+{
+    Serial.println("Initiating Auto-Shutoff");
+    r1.setValue(false);
+    r2.setValue(false);
+    // Make sure the step process if nullified
+    //smh->step(0, FORWARD, MOVEMENT_MODE);
+    //smv->step(0, FORWARD, MOVEMENT_MODE);
+    
+    // Release all of the motors
+    smh->release();
+    smv->release();
+    Serial.println("Auto-Shutoff Engaged");
+}

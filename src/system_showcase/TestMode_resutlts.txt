@@ -1,0 +1,4 @@
+Tolerance Value : 3 - 4 (mostly 3) 
+
+
+Hotwire - Connect input pins to the arduiino, then plug the outlet pins to the relay itself
