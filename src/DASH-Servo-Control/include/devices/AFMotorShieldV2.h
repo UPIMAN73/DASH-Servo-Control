@@ -1,12 +1,12 @@
-#ifndef AFMOTORSHIELD_H_
-#define AFMOTORSHIELD_H_
+#ifndef AFMOTORSHIELDV2_H_
+#define AFMOTORSHIELDV2_H_
 
 /*
  * @author Joshua Calzadillas
  * @date December 1, 2019
  * 
  * @desc
- * Arduino Motor Shield Setup
+ * Arduino Motor Shield V2 Setup
  * 
  */
 
@@ -16,9 +16,9 @@
 #include "StepperMotor.h"
 
 // Predefined values
-#define STEPS_PER_ROTATION 200
+#define STEPS_PER_ROTATION 100
 #define MOVEMENT_MODE SINGLE
-#define MOVEMENT_SPEED 20.0
+#define MOVEMENT_SPEED 100
 
 
 /*

@@ -17,12 +17,12 @@ class StepperMotor : public Motor
 {
     //
     public:
-        StepperMotor(String name, int pin, double steps) : Motor(pin, name)
+        StepperMotor(String name, uint8_t pin, uint16_t steps) : Motor(pin, name)
         {
             m_steps = steps;
         }
 
-        double getSteps()
+        uint16_t getSteps()
         {
             return m_steps;
         }
@@ -35,7 +35,7 @@ class StepperMotor : public Motor
         }
     
     private:
-        double m_steps;
+        uint16_t m_steps;
 };
 
 #endif

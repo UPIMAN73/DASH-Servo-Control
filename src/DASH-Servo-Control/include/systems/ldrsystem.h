@@ -39,7 +39,7 @@ class LDRSystem : public SensorSystem
         uint leftBottom()   { return ldr_lb->getValue(); }
 
         // Setting up the position needed to calculate for the motor system
-        virtual ushort get();
+        ushort get();
         
     
     private:

@@ -1,4 +1,8 @@
+#ifndef TESTMODE_H_
+#define TESTMODE_H_
+
 #include "time.h"
+#include <Arduino.h>
 
 /*
  * @author Joshua Calzadillas
@@ -20,7 +24,7 @@ class TestMode
          * final_threshold : get the final final threshold value for the run loop
          * duration : how long you want the run loop to operate for
          */
-        TestMode(String name, double initial_threshold, double final_threshold, long duration)
+        TestMode(String name, float initial_threshold, float final_threshold, long duration)
         {
             m_name = name;
             m_it = initial_threshold;
@@ -28,24 +32,23 @@ class TestMode
             m_duration = duration;
         }
 
-        virtual void run()
-        {
-            Serial.println("Test Mode Parent Function");
-            Serial.println("Needs to be inherited in order to have it operate correctly.");
-        } // Write your own run function
+        // Action Control Functions
+        virtual void init();
+        virtual void run();
+        virtual void stop();
 
-
+        // Get the name of the test mode
         String getName()
         {
           return m_name;
         }
 
-        double getInitialValue()
+        float getInitialValue()
         {
           return m_it;
         }
 
-        double getFinalValue()
+        float getFinalValue()
         {
           return m_ft;
         }
@@ -54,10 +57,18 @@ class TestMode
         {
           return m_duration;
         }
+
+        bool isRunning()
+        {
+          return m_running;
+        }
     
     protected:
         String m_name;
-        double m_it;
-        double m_ft;
+        bool m_running = false;
+        float m_it;
+        float m_ft;
         long m_duration;
 };
+
+#endif

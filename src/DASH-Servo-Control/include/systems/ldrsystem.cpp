@@ -1,7 +1,7 @@
 #include "ldrsystem.h"
 
 
-virtual ushort LDRSystem::get()
+ushort LDRSystem::get()
 {
     // getting analog input values
     uint ldrlt = ldr_lt->getValue();

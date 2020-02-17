@@ -1,6 +1,8 @@
 #ifndef ANALOGDEVICE_H_
 #define ANALOGDEVICE_H_
 
+#include <Arduino.h>
+
 /*
  * @author Joshua Calzadillas
  * @version November 12, 2019

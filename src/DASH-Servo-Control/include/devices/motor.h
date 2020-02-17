@@ -16,14 +16,14 @@
 class Motor
 {
     public:
-        Motor(int pin, String name)
+        Motor(uint8_t pin, String name)
         {
             m_name = name;
             m_pin = pin;
             //TODO Motor shield call
         }
 
-        int getPin()
+        uint8_t getPin()
         {
           return m_pin;
         }

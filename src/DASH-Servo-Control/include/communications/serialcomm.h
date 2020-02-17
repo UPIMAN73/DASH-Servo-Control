@@ -6,11 +6,20 @@
 class SerialComm
 {
     public:
-        void open(unsigned long buad);
+        // Write functions and Read functions
+        void open(unsigned long cbuad)
+        {
+            buad = cbuad;
+            Serial.begin(cbuad);
+        }
         static SerialComm * getInstance();
 
-        // Write functions and Read functions
-        String read();
+        
+
+        String SerailComm::read()
+        {
+            return Serial.readString();
+        }
         template <typename T> void write(T msg) { Serial.print(msg); }
         template <typename T> void writeln(T msg) { Serial.println(msg); }
 
