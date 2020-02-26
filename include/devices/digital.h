@@ -12,7 +12,7 @@ class DigitalDevice
         ~DigitalDevice();
 
         // Device Control
-        virtual uint16 getDevice();             // Get Device Input Value
+        virtual uint8 getDevice();             // Get Device Input Value
         virtual void setDevice(uint8 value);    // Set Device Output Value
 
         // Getters

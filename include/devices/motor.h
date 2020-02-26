@@ -21,11 +21,13 @@ class Motor
             //TODO Motor shield call
         }
 
+        // Get teh pin
         uint8 getPin()
         {
           return m_pin;
         }
 
+        // Get Name
         String getName()
         {
           return m_name;

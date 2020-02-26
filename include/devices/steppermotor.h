@@ -6,17 +6,19 @@
  * @version November 11, 2019
  * 
  * @description 
- * StepperMotor class stores information about the stepper motors into a class.
+ * SM class stores information about the stepper motors into a class.
  */ 
 
 
 #include "motor.h"
 
-class StepperMotor : public Motor
+class SM : public Motor
 {
     //
     public:
-        StepperMotor(String name, uint8_t pin, uint16_t steps) : Motor(pin, name)
+        SM();
+
+        SM(String name, uint8_t pin, uint16_t steps) : Motor(pin, name)
         {
             m_steps = steps;
         }

@@ -6,11 +6,19 @@
 #define DTIME 3
 
 
-// Pin Definitions
+/*
+ * Pin Definitions
+ */
+
+// LDR
 #define LDR_RT_PIN A0
 #define LDR_RB_PIN A1
 #define LDR_LT_PIN A2
 #define LDR_LB_PIN A3
+
+// Limit Switch
+#define LS_RIGHT_PIN 0
+#define LS_LEFT_PIN  0
 
 // Typedef for unsiged integers
 typedef unsigned char uint8;

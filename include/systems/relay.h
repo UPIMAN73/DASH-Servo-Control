@@ -7,16 +7,18 @@
 class RelaySystem
 {
     public:
-        RelaySystem(DigitalDevice a, DigitalDevice b, float tstamp, uint8_t run_time);
+        RelaySystem(DigitalDevice a, DigitalDevice b, float tstamp, uint8 run_time);
+        ~RelaySystem();
 
         void run(); // Run the Relay System to the defined sets
     
     private:
+        bool init = false;
         DigitalDevice r1;
         DigitalDevice r2;
 
         // runloop variables
-        uint8_t rtime;
+        uint8 rtime;
         float timestamp;
 };
 

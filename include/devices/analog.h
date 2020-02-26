@@ -12,8 +12,8 @@ class AnalogDevice
         ~AnalogDevice();
 
         // Device Control
-        uint16 getDevice();             // Get Device Input Value
-        void setDevice(uint8 value);    // Set Device Output Value
+        virtual uint16 getDevice();             // Get Device Input Value
+        virtual void setDevice(uint8 value);    // Set Device Output Value
 
         // Getters
         uint8 getId();

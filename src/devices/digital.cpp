@@ -58,10 +58,11 @@ void DigitalDevice::setDevice(uint8 value)
 }
 
 
-uint16 DigitalDevice::getDevice()
+uint8 DigitalDevice::getDevice()
 {
     if (m_input)
     {
         return digitalRead(m_id);
     }
+    return 0;
 }
