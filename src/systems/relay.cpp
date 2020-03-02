@@ -1,12 +1,17 @@
 #include "systems/relay.h"
 
+RelaySystem::RelaySystem()
+{
+    // DOTHING;
+}
+
 // Relay System
-RelaySystem::RelaySystem(DigitalDevice a, DigitalDevice b, float tstamp, uint8 run_time)
+RelaySystem::RelaySystem(uint8 a, uint8 b, float tstamp, uint8 run_time)
 {
     rtime = run_time;
     timestamp = tstamp;
-    r1 = a;
-    r2 = b;
+    r1 = DigitalDevice(a, false);
+    r2 = DigitalDevice(b, false);
     init = true;
 }
 
@@ -23,23 +28,62 @@ RelaySystem::~RelaySystem()
     // Delete the instance
 }
 
+// Start the Relay
+void RelaySystem::start()
+{
+    if (init)
+    {
+        // Normal
+        r1.setDevice(LOW);
+        r2.setDevice(LOW);
+
+        // Reversed
+        // r2.setDevice(HIGH);
+        // r1.setDevice(HIGH);
+    }
+}
+
+    
+// Relay Stop
+void RelaySystem::stop()
+{
+    if (init)
+    {
+        // Normal
+        r2.setDevice(HIGH);
+        r1.setDevice(HIGH);
+
+        // Reversed
+        // r1.setDevice(LOW);
+        // r2.setDevice(LOW);
+    }
+}
+    
+
 // Run Function
 void RelaySystem::run()
 {
     if (init)
     {
         float initTime = 0.0f;
-        for (uint8 i = 0; i < rtime; i++)
+        for (uint8 i = 1; i <= rtime; i++)
         {
+            // print out the relay
+            Serial.print("Relay run ");
+            Serial.print(i);
+            Serial.println(" times");
+
+            // get init time
             initTime = getAccurateSeconds();
             while (timeDelta(getAccurateSeconds(), initTime) < timestamp)
             {
-                r1.setDevice(HIGH);
-                r2.setDevice(HIGH);
+                // set the device to high state
+                start();
                 delay(10);
             }
-            r2.setDevice(LOW);
-            r1.setDevice(LOW);
+
+            // relay shutoff
+            stop();
             delay(100);
         }
     }

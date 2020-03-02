@@ -59,23 +59,23 @@ void MotorSys::run()
         leftval = ldltv + ldlbv;
 
         // Break the movement by limi switches
-        if (ls.getState() || rs.getState())
-        {
-            return;
-        }
+        // if (ls.getState() || rs.getState())
+        // {
+        //     return;
+        // }
 
         // Vertical Movement
         if (abs(topval) - abs(botval) > athresh || abs(botval) - abs(topval) > athresh)
         {
             if (topval > botval + threshold)
             {
-                vForward();
+                //vForward();
                 // Serial.println("Up");
             }
 
             else if (botval > topval + threshold)
             {
-                vBackward();
+                // vBackward();
                 // Serial.println("Down");
             }
             Serial.print("Top\t");
@@ -90,13 +90,13 @@ void MotorSys::run()
             
             if (rightval > leftval + threshold)
             {
-                hForward();
+                // hForward();
                 // Serial.println("Right");
             }
 
             else if (leftval > rightval + threshold)
             {
-                hBackward();
+                // hBackward();
                 // Serial.println("Left");
             }
             Serial.print("Right\t");

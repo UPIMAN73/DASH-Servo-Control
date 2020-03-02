@@ -66,3 +66,10 @@ uint8 DigitalDevice::getDevice()
     }
     return 0;
 }
+
+
+void DigitalDevice::clean()
+{
+    m_id = 0;
+    m_input = false;
+}
